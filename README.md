@@ -1,1 +1,1 @@
-# investorsol.github.io
+# githubpages.github.io
