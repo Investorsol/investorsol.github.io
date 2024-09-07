@@ -11,7 +11,7 @@
             align-items: center;
             justify-content: center;
             height: 80vh;
-            background-image: url('./images/solo.png');
+            background-image: url('./images/finance9.png');
             background-size: cover;
             background-position: center;
             text-align: center;
@@ -122,6 +122,12 @@
             background-color: #FF6347;
             padding: 10px 20px;
             border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            position: fixed; /* Fixed position for sign-up button */
+            top: 20px;
+            right: 20px;
+            z-index: 2; /* Ensure it is above other elements */
         }
 
         .separator {
@@ -181,13 +187,13 @@
             display: none;
             position: fixed;
             top: 0;
-            right: 0;
+            left: 0; /* Position the drawer on the top left corner */
             height: 100vh;
             width: 250px;
             background-color: #333;
             color: white;
             padding: 20px;
-            transform: translateX(100%);
+            transform: translateX(-100%); /* Hide drawer off-screen initially */
             transition: transform 0.3s ease;
             z-index: 10;
             overflow-y: auto; /* Ensure content is scrollable */
@@ -205,14 +211,33 @@
 
         .drawer ul li {
             margin: 20px 0;
+            position: relative; /* For dropdown positioning */
         }
 
         .drawer ul li a {
             color: white;
             text-decoration: none;
             font-size: 18px;
+            display: block;
+            padding: 10px 0;
         }
 
+        .drawer .dropdown {
+            display: none;
+            background-color: #444;
+            padding-left: 20px;
+        }
+
+        .drawer .dropdown a {
+            padding: 10px 15px;
+            color: #ddd;
+        }
+
+        .drawer .dropdown a:hover {
+            background-color: #555;
+        }
+
+        /* Hamburger Icon Changes */
         .hamburger {
             display: none;
             font-size: 30px;
@@ -220,8 +245,17 @@
             cursor: pointer;
             position: absolute;
             top: 20px;
-            right: 30px;
+            left: 20px; /* Adjust position to top left corner */
             z-index: 11; /* Ensure it's above other elements */
+        }
+
+        .hamburger::before {
+            content: '\2630'; /* Hamburger icon (three dots) */
+        }
+
+        /* Close Icon for Hamburger */
+        .hamburger.open::before {
+            content: '\00d7'; /* Close icon */
         }
 
         /* Media query for small screens */
@@ -232,6 +266,11 @@
 
             .hamburger {
                 display: block; /* Show hamburger icon on smaller screens */
+            }
+
+            /* Hide the hamburger icon when the drawer is open */
+            .drawer.open ~ .hamburger {
+                display: none; /* Ensure the hamburger icon is hidden when drawer is open */
             }
         }
     </style>
@@ -257,7 +296,6 @@
                         <div class="dropdown-wrapper">
                             <div class="dropdown">
                                 <a href="#">Pricing</a>
-                                <a href="#">Benefits</a>
                                 <a href="#">Benefits</a>
                             </div>
                         </div>
@@ -289,27 +327,59 @@
                             </div>
                         </div>
                     </li>
-                    <li><a href="#" class="sign-up">Sign Up Free</a></li>
                 </ul>
             </nav>
         </div>
         <div class="separator"></div> <!-- Separator Line -->
 
         <!-- Hamburger Icon for Small Screens -->
-        <div class="hamburger">&#9776;</div>
+        <div class="hamburger"></div>
         
         <!-- Drawer for Small Screens -->
         <div class="drawer">
             <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Membership</a></li>
-                <li><a href="#">Products & Services</a></li>
-                <li><a href="#">Resources</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#" class="sign-up">Sign Up Free</a></li>
+                <li>
+                    <a href="#">About Us</a>
+                    <div class="dropdown">
+                        <a href="#">Our Story</a>
+                        <a href="#">Team</a>
+                        <a href="#">Careers</a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Membership</a>
+                    <div class="dropdown">
+                        <a href="#">Pricing</a>
+                        <a href="#">Benefits</a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Products & Services</a>
+                    <div class="dropdown">
+                        <a href="#">Loan Products</a>
+                        <a href="#">Savings</a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Resources</a>
+                    <div class="dropdown">
+                        <a href="#">Blog</a>
+                        <a href="#">FAQs</a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                    <div class="dropdown">
+                        <a href="#">Support</a>
+                        <a href="#">Locations</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </header>
+
+    <!-- Sign Up Free Button -->
+    <a href="#" class="sign-up">Sign Up </a>
 
     <section class="hero">
         <div class="content">
@@ -331,23 +401,21 @@
         document.addEventListener('DOMContentLoaded', () => {
             const drawer = document.querySelector('.drawer');
             const hamburger = document.querySelector('.hamburger');
+            const drawerItems = document.querySelectorAll('.drawer ul li');
 
             hamburger.addEventListener('click', () => {
                 drawer.classList.toggle('open'); // Toggle drawer visibility
+                hamburger.classList.toggle('open'); // Toggle hamburger icon to close icon
             });
 
-            const navItems = document.querySelectorAll('nav ul li a');
-
-            navItems.forEach(item => {
-                item.addEventListener('click', (event) => {
-                    // Prevent default action for demonstration purposes
-                    event.preventDefault();
-
-                    // Remove 'active' class from all menu items
-                    navItems.forEach(navItem => navItem.parentElement.classList.remove('active'));
-
-                    // Add 'active' class to the clicked item
-                    item.parentElement.classList.add('active');
+            drawerItems.forEach(item => {
+                const link = item.querySelector('a');
+                link.addEventListener('click', (event) => {
+                    const dropdown = item.querySelector('.dropdown');
+                    if (dropdown) {
+                        event.preventDefault(); // Prevent default action for demonstration purposes
+                        dropdown.classList.toggle('open'); // Toggle dropdown visibility
+                    }
                 });
             });
         });
