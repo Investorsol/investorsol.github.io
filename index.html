@@ -5,213 +5,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cheapy Loan - Loan Management System</title>
     <style>
-    .hero {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 80vh;
-        background-image: url('../CheapyApp/images/finance9.webp');
-        background-size: cover;
-        background-position: center;
-        text-align: center;
-        position: relative;
-    }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            background-image: url('../CheapyApp/images/finance9.webp');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            position: relative;
+        }
 
-    header {
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        background: transparent;
-        z-index: 1;
-    }
+        header {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            background: transparent;
+            z-index: 1;
+        }
 
-    .navbar {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 15px 30px;
-        position: relative;
-    }
-
-    .logo {
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        position: absolute;
-        top: 15px;
-        left: 30px;
-    }
-
-    nav {
-        display: flex;
-    }
-
-    nav ul {
-        list-style: none;
-        display: flex;
-    }
-
-    nav ul li {
-        margin-left: 20px;
-        position: relative;
-    }
-
-    nav ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 16px;
-        padding: 5px 10px;
-        transition: color 0.3s ease;
-    }
-
-    nav ul li a:after {
-        content: '';
-        display: block;
-        height: 3px;
-        width: 0;
-        background-color: #FF6347;
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        transition: width 0.3s ease;
-    }
-
-    nav ul li a:hover:after {
-        width: 100%;
-    }
-
-    .sign-up {
-        background-color: #FF6347;
-        padding: 10px 20px;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .separator {
-        height: 1px;
-        background-color: #FF6347;
-        margin: 30px auto;
-        width: 90%;
-        max-width: 1200px;
-    }
-
-    .hero h1 {
-        color: #FF6347;
-        font-size: 68px;
-        margin-bottom: 20px;
-    }
-
-    .hero p {
-        color: white;
-        font-size: 20px;
-        margin-bottom: 30px;
-    }
-
-    .trial-btn {
-        background-color: #FF6347;
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 5px;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-    .sub-text {
-        color: white;
-        font-size: 16px;
-        margin-top: 10px;
-    }
-
-    footer {
-        background-color: #E8F5E9;
-        padding: 20px 0;
-        text-align: center;
-    }
-
-    .trusted p {
-        font-size: 18px;
-        color: #333;
-    }
-
-    .trusted a {
-        color: #FF6347;
-        text-decoration: none;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
         .navbar {
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
         }
 
         nav ul {
-            display: none;
-            flex-direction: column;
-            background-color: rgba(0, 0, 0, 0.8);
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 200px;
-            padding: 20px;
-            border-radius: 5px;
+            list-style: none;
+            display: flex;
         }
 
         nav ul li {
-            margin: 10px 0;
-        }
-
-        .menu-toggle {
-            display: block;
-            background-color: #FF6347;
-            padding: 10px;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
+            margin-left: 20px;
+            position: relative;
         }
 
         nav ul li a {
-            font-size: 18px;
-        }
-
-        .hero h1 {
-            font-size: 36px;
-        }
-
-        .hero p, .sub-text {
-            font-size: 14px;
-        }
-
-        .trial-btn {
+            color: white;
+            text-decoration: none;
             font-size: 16px;
+            padding: 5px 10px;
+            position: relative;
+        }
+
+        nav ul li a:after {
+            content: '';
+            display: block;
+            height: 3px;
+            width: 0;
+            background-color: #FF6347;
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+
+        /* Sign-up button styling */
+        .sign-up {
+            background-color: #FF6347;
             padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
         }
-    }
 
-    @media (max-width: 480px) {
+        .separator {
+            height: 1px;
+            background-color: #FF6347;
+            margin: 30px auto;
+            width: 90%;
+            max-width: 1200px;
+        }
+
         .hero h1 {
-            font-size: 28px;
+            color: #FF6347;
+            font-size: 68px;
+            margin-bottom: 20px;
         }
 
-        .hero p, .sub-text {
-            font-size: 12px;
+        .hero p {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 30px;
         }
 
         .trial-btn {
-            font-size: 14px;
-            padding: 8px 16px;
+            background-color: #FF6347;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
         }
 
-        nav ul {
-            width: 160px;
+        .sub-text {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
         }
 
-        .navbar {
-            padding: 10px 20px;
+        footer {
+            background-color: #E8F5E9;
+            padding: 20px 0;
+            text-align: center;
         }
-    }
+
+        .trusted p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .trusted a {
+            color: #FF6347;
+            text-decoration: none;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                background-color: rgba(0, 0, 0, 0.9);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 100%;
+                padding: 10px;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+
+            nav ul li .dropdown {
+                display: none;
+                background-color: #fff;
+                padding: 10px;
+                border-radius: 5px;
+                position: relative;
+            }
+
+            .dropdown-arrow {
+                display: inline-block;
+                margin-left: 10px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            nav ul li .dropdown-arrow.open + .dropdown {
+                display: block;
+            }
+
+            .menu-toggle {
+                display: block;
+                background-color: #FF6347;
+                padding: 10px;
+                color: white;
+                cursor: pointer;
+                font-size: 18px;
+                border: none;
+            }
+
+            .navbar {
+                justify-content: space-between;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+
+            nav ul {
+                display: flex;
+            }
+
+            nav ul li:hover .dropdown {
+                display: block;
+                position: absolute;
+                background-color: white;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                z-index: 1;
+                min-width: 200px;
+                padding: 10px 0;
+            }
+
+            nav ul li .dropdown a {
+                color: #333;
+                padding: 10px 15px;
+                display: block;
+                text-align: left;
+            }
+
+            nav ul li .dropdown a:hover {
+                background-color: #f0f0f0;
+            }
+        }
 
     </style>
 </head>
@@ -220,14 +227,50 @@
     <header>
         <div class="navbar">
             <span class="logo">CheapyLoan</span>
-            <span class="menu-toggle">☰</span>
+            <button class="menu-toggle">☰</button>
             <nav>
                 <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Membership</a></li>
-                    <li><a href="#">Products & Services</a></li>
-                    <li><a href="#">Resources</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li>
+                        <a href="#">About Us</a>
+                        <span class="dropdown-arrow">▼</span>
+                        <div class="dropdown">
+                            <a href="#">Our Story</a>
+                            <a href="#">Team</a>
+                            <a href="#">Careers</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Membership</a>
+                        <span class="dropdown-arrow">▼</span>
+                        <div class="dropdown">
+                            <a href="#">Pricing</a>
+                            <a href="#">Benefits</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Products & Services</a>
+                        <span class="dropdown-arrow">▼</span>
+                        <div class="dropdown">
+                            <a href="#">Loan Products</a>
+                            <a href="#">Savings</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Resources</a>
+                        <span class="dropdown-arrow">▼</span>
+                        <div class="dropdown">
+                            <a href="#">Blog</a>
+                            <a href="#">FAQs</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                        <span class="dropdown-arrow">▼</span>
+                        <div class="dropdown">
+                            <a href="#">Support</a>
+                            <a href="#">Locations</a>
+                        </div>
+                    </li>
                     <li><a href="#" class="sign-up">Sign Up Free</a></li>
                 </ul>
             </nav>
@@ -255,9 +298,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.querySelector('.menu-toggle');
             const nav = document.querySelector('nav ul');
+            const dropdownArrows = document.querySelectorAll('.dropdown-arrow');
 
+            // Toggle menu visibility on mobile
             menuToggle.addEventListener('click', () => {
                 nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+            });
+
+            // Toggle dropdown visibility on arrow click
+            dropdownArrows.forEach(arrow => {
+                arrow.addEventListener('click', (e) => {
+                    const dropdown = e.target.nextElementSibling;
+                    dropdown.classList.toggle('open');
+                });
             });
         });
     </script>
