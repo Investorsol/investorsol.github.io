@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiver - Voice Call System</title>
+</head>
+<body>
+    <h1>Receiver</h1>
+    <p>Your Peer ID: <input type="text" id="receiverPeerId" readonly></p>
+    <button id="endCallButton" disabled>End Call</button>
+
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script>
+        // Initialize PeerJS with TURN/STUN server configuration
+        const receiverPeer = new Peer({
+            config: {
+                'iceServers': [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'turn:turn.bistri.com:80', credential: 'homeo', username: 'homeo' }
+                ]
+            }
+        });
+
+        // Elements
+        const receiverPeerIdInput = document.getElementById('receiverPeerId');
+        const endCallButton = document.getElementById('endCallButton');
+
+        let receiverStream;
+        let currentCall;
+
+        // Get the receiver's audio stream
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                receiverStream = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing audio devices:', error);
+                alert('Could not access audio devices: ' + error.message);
+            });
+
+        // Display the receiver's Peer ID
+        receiverPeer.on('open', id => {
+            receiverPeerIdInput.value = id;
+        });
+
+        // Automatically answer incoming calls
+        receiverPeer.on('call', call => {
+            // Answer the call with the receiver's audio stream
+            call.answer(receiverStream);
+
+            // Play the caller's audio stream when received
+            call.on('stream', remoteStream => {
+                const audio = new Audio();
+                audio.srcObject = remoteStream;
+                audio.play();
+            });
+
+            currentCall = call;
+
+            endCallButton.disabled = false;
+        });
+
+        // End the current call
+        endCallButton.onclick = () => {
+            if (currentCall) {
+                currentCall.close();
+                currentCall = null;
+            }
+
+            endCallButton.disabled = true;
+        };
+
+        // Handle errors
+        receiverPeer.on('error', err => {
+            console.error('PeerJS Error:', err);
+            alert('An error occurred: ' + err.type);
+        });
+    </script>
+</body>
+</html>
