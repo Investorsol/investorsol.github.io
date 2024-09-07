@@ -6,195 +6,212 @@
     <title>Cheapy Loan - Loan Management System</title>
     <style>
     .hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 80vh;
-    background-image: url('./images/finance9.webp');
-    background-size: cover;
-    background-position: center;
-    text-align: center;
-    position: relative; /* For absolute positioning of navbar and separator */
-}
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80vh;
+        background-image: url('../CheapyApp/images/finance9.webp');
+        background-size: cover;
+        background-position: center;
+        text-align: center;
+        position: relative;
+    }
 
-header {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    background: transparent; /* Transparent background for the header */
-    z-index: 1; /* Ensure header is above background image */
-}
+    header {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        background: transparent;
+        z-index: 1;
+    }
 
-.navbar {
-    display: flex;
-    justify-content: flex-end; /* Align navbar to the right */
-    align-items: center;
-    padding: 15px 30px; /* Padding for navbar */
-    position: relative; /* Ensure it stays within the header */
-}
+    .navbar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 15px 30px;
+        position: relative;
+    }
 
-.logo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    position: absolute;
-    top: 15px; /* Space from the top */
-    left: 30px; /* Space from the left */
-}
+    .logo {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        top: 15px;
+        left: 30px;
+    }
 
-nav {
-    display: flex;
-}
+    nav {
+        display: flex;
+    }
 
-nav ul {
-    list-style: none;
-    display: flex;
-}
+    nav ul {
+        list-style: none;
+        display: flex;
+    }
 
-nav ul li {
-    margin-left: 20px;
-    position: relative; /* For dropdown positioning */
-}
+    nav ul li {
+        margin-left: 20px;
+        position: relative;
+    }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 5px 10px;
-    position: relative;
-    transition: color 0.3s ease;
-}
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 5px 10px;
+        transition: color 0.3s ease;
+    }
 
-nav ul li a:after {
-    content: '';
-    display: block;
-    height: 3px; /* Thickness of underline */
-    width: 0;
-    background-color: #FF6347;
-    position: absolute;
-    bottom: -10px; /* Positioning underline below the header padding */
-    left: 0;
-    transition: width 0.3s ease; /* Smooth transition */
-}
+    nav ul li a:after {
+        content: '';
+        display: block;
+        height: 3px;
+        width: 0;
+        background-color: #FF6347;
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        transition: width 0.3s ease;
+    }
 
-nav ul li a:hover {
-    color: white;
-}
+    nav ul li a:hover:after {
+        width: 100%;
+    }
 
-nav ul li a:hover:after {
-    width: 100%; /* Full underline on hover */
-}
+    .sign-up {
+        background-color: #FF6347;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+    }
 
-/* Dropdown menu */
-nav ul li .dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 15px); /* Ensure dropdown is below the underline */
-    left: 0;
-    background-color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    min-width: 200px;
-    border-radius: 0 0 8px 8px; /* Curved bottom corners */
-}
+    .separator {
+        height: 1px;
+        background-color: #FF6347;
+        margin: 30px auto;
+        width: 90%;
+        max-width: 1200px;
+    }
 
+    .hero h1 {
+        color: #FF6347;
+        font-size: 68px;
+        margin-bottom: 20px;
+    }
 
-nav ul li .dropdown a {
-    color: #333;
-    padding: 10px 15px;
-    display: block;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
+    .hero p {
+        color: white;
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
 
-nav ul li .dropdown a:hover {
-    background-color: #f0f0f0; /* Light grey on hover */
-}
+    .trial-btn {
+        background-color: #FF6347;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+    }
 
-/* Show dropdown on hover */
-nav ul li:hover .dropdown {
-    display: block;
-}
+    .sub-text {
+        color: white;
+        font-size: 16px;
+        margin-top: 10px;
+    }
 
-/* Sign-up button styling */
-.sign-up {
-    background-color: #FF6347;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
-/* Remove underline from Sign-up button */
-nav ul li .sign-up {
-    text-decoration: none;
-    position: relative;
-}
+    footer {
+        background-color: #E8F5E9;
+        padding: 20px 0;
+        text-align: center;
+    }
 
-nav ul li .sign-up:after {
-    display: none; /* Disable underline effect for the sign-up button */
-}
+    .trusted p {
+        font-size: 18px;
+        color: #333;
+    }
 
+    .trusted a {
+        color: #FF6347;
+        text-decoration: none;
+    }
 
-.separator {
-    height: 1px;
-    background-color: #FF6347; /* Separator color */
-    margin: 30px auto; /* Margin from navbar and center it */
-    width: 90%; /* Adjust width to not touch extreme edges */
-    max-width: 1200px; /* Optional: Max width for larger screens */
-}
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .navbar {
+            justify-content: space-between;
+        }
 
-.hero h1 {
-    color: #FF6347;
-    font-size: 68px;
-    margin-bottom: 20px;
-}
+        nav ul {
+            display: none;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.8);
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 200px;
+            padding: 20px;
+            border-radius: 5px;
+        }
 
-.hero p {
-    color: white;
-    font-size: 20px;
-    margin-bottom: 30px;
-}
+        nav ul li {
+            margin: 10px 0;
+        }
 
-.trial-btn {
-    background-color: #FF6347;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-}
+        .menu-toggle {
+            display: block;
+            background-color: #FF6347;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
 
-.sub-text {
-    color: white;
-    font-size: 16px;
-    margin-top: 10px;
-}
+        nav ul li a {
+            font-size: 18px;
+        }
 
-footer {
-    background-color: #E8F5E9;
-    padding: 20px 0;
-    text-align: center;
-}
+        .hero h1 {
+            font-size: 36px;
+        }
 
-.trusted p {
-    font-size: 18px;
-    color: #333;
-}
+        .hero p, .sub-text {
+            font-size: 14px;
+        }
 
-.trusted a {
-    color: #FF6347;
-    text-decoration: none;
-}
-.logo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    position: absolute;
-    top: 15px; /* Space from the top */
-    left: 30px; /* Space from the left */
-}
+        .trial-btn {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+    }
 
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 28px;
+        }
+
+        .hero p, .sub-text {
+            font-size: 12px;
+        }
+
+        .trial-btn {
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+
+        nav ul {
+            width: 160px;
+        }
+
+        .navbar {
+            padding: 10px 20px;
+        }
+    }
 
     </style>
 </head>
@@ -203,60 +220,19 @@ footer {
     <header>
         <div class="navbar">
             <span class="logo">CheapyLoan</span>
+            <span class="menu-toggle">☰</span>
             <nav>
                 <ul>
-                    <li>
-                        <a href="#">About Us</a>
-                        <div class="dropdown-wrapper">
-                            <div class="dropdown">
-                                <a href="#">Our Story</a>
-                                <a href="#">Team</a>
-                                <a href="#">Careers</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#">Membership</a>
-                        <div class="dropdown-wrapper">
-                            <div class="dropdown">
-                                <a href="#">Pricing</a>
-                                <a href="#">Benefits</a>
-                                <a href="#">Benefits</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#">Products & Services</a>
-                        <div class="dropdown-wrapper">
-                            <div class="dropdown">
-                                <a href="#">Loan Products</a>
-                                <a href="#">Savings</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#">Resources</a>
-                        <div class="dropdown-wrapper">
-                            <div class="dropdown">
-                                <a href="#">Blog</a>
-                                <a href="#">FAQs</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                        <div class="dropdown-wrapper">
-                            <div class="dropdown">
-                                <a href="#">Support</a>
-                                <a href="#">Locations</a>
-                            </div>
-                        </div>
-                    </li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Membership</a></li>
+                    <li><a href="#">Products & Services</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
                     <li><a href="#" class="sign-up">Sign Up Free</a></li>
                 </ul>
             </nav>
         </div>
-        <div class="separator"></div> <!-- Separator Line -->
+        <div class="separator"></div>
     </header>
 
     <section class="hero">
@@ -277,19 +253,11 @@ footer {
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const navItems = document.querySelectorAll('nav ul li a');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('nav ul');
 
-            navItems.forEach(item => {
-                item.addEventListener('click', (event) => {
-                    // Prevent default action for demonstration purposes
-                    event.preventDefault();
-
-                    // Remove 'active' class from all menu items
-                    navItems.forEach(navItem => navItem.parentElement.classList.remove('active'));
-
-                    // Add 'active' class to the clicked item
-                    item.parentElement.classList.add('active');
-                });
+            menuToggle.addEventListener('click', () => {
+                nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
             });
         });
     </script>
