@@ -15,7 +15,7 @@
             background-size: cover;
             background-position: center;
             text-align: center;
-            position: relative;
+            position: relative; /* For absolute positioning of navbar and separator */
         }
 
         header {
@@ -23,21 +23,25 @@
             top: 0;
             right: 0;
             left: 0;
-            background: transparent;
-            z-index: 1;
+            background: transparent; /* Transparent background for the header */
+            z-index: 1; /* Ensure header is above background image */
         }
 
         .navbar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* Align navbar to the right */
             align-items: center;
-            padding: 15px 30px;
+            padding: 15px 30px; /* Padding for navbar */
+            position: relative; /* Ensure it stays within the header */
         }
 
         .logo {
             color: white;
             font-size: 24px;
             font-weight: bold;
+            position: absolute;
+            top: 15px; /* Space from the top */
+            left: 30px; /* Space from the left */
         }
 
         nav {
@@ -51,7 +55,7 @@
 
         nav ul li {
             margin-left: 20px;
-            position: relative;
+            position: relative; /* For dropdown positioning */
         }
 
         nav ul li a {
@@ -60,22 +64,57 @@
             font-size: 16px;
             padding: 5px 10px;
             position: relative;
+            transition: color 0.3s ease;
         }
 
         nav ul li a:after {
             content: '';
             display: block;
-            height: 3px;
+            height: 3px; /* Thickness of underline */
             width: 0;
             background-color: #FF6347;
             position: absolute;
-            bottom: -10px;
+            bottom: -10px; /* Positioning underline below the header padding */
             left: 0;
-            transition: width 0.3s ease;
+            transition: width 0.3s ease; /* Smooth transition */
+        }
+
+        nav ul li a:hover {
+            color: white;
         }
 
         nav ul li a:hover:after {
-            width: 100%;
+            width: 100%; /* Full underline on hover */
+        }
+
+        /* Dropdown menu */
+        nav ul li .dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 15px); /* Ensure dropdown is below the underline */
+            left: 0;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            min-width: 200px;
+            border-radius: 0 0 8px 8px; /* Curved bottom corners */
+        }
+
+        nav ul li .dropdown a {
+            color: #333;
+            padding: 10px 15px;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li .dropdown a:hover {
+            background-color: #f0f0f0; /* Light grey on hover */
+        }
+
+        /* Show dropdown on hover */
+        nav ul li:hover .dropdown {
+            display: block;
         }
 
         /* Sign-up button styling */
@@ -83,15 +122,14 @@
             background-color: #FF6347;
             padding: 10px 20px;
             border-radius: 5px;
-            color: white;
         }
 
         .separator {
             height: 1px;
-            background-color: #FF6347;
-            margin: 30px auto;
-            width: 90%;
-            max-width: 1200px;
+            background-color: #FF6347; /* Separator color */
+            margin: 30px auto; /* Margin from navbar and center it */
+            width: 90%; /* Adjust width to not touch extreme edges */
+            max-width: 1200px; /* Optional: Max width for larger screens */
         }
 
         .hero h1 {
@@ -138,144 +176,139 @@
             text-decoration: none;
         }
 
-        /* Responsive Adjustments */
+        /* Drawer for small screens */
+        .drawer {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 10;
+            overflow-y: auto; /* Ensure content is scrollable */
+        }
+
+        .drawer.open {
+            transform: translateX(0); /* Slide in the drawer */
+            display: block; /* Ensure it's visible when open */
+        }
+
+        .drawer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drawer ul li {
+            margin: 20px 0;
+        }
+
+        .drawer ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 11; /* Ensure it's above other elements */
+        }
+
+        /* Media query for small screens */
         @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                background-color: rgba(0, 0, 0, 0.9);
-                position: absolute;
-                top: 60px;
-                right: 0;
-                width: 100%;
-                padding: 10px;
+            .navbar, .separator {
+                display: none; /* Hide regular navbar and separator on smaller screens */
             }
 
-            nav ul li {
-                margin: 10px 0;
-            }
-
-            nav ul li .dropdown {
-                display: none;
-                background-color: #fff;
-                padding: 10px;
-                border-radius: 5px;
-                position: relative;
-            }
-
-            .dropdown-arrow {
-                display: inline-block;
-                margin-left: 10px;
-                font-size: 14px;
-                cursor: pointer;
-            }
-
-            nav ul li .dropdown-arrow.open + .dropdown {
-                display: block;
-            }
-
-            .menu-toggle {
-                display: block;
-                background-color: #FF6347;
-                padding: 10px;
-                color: white;
-                cursor: pointer;
-                font-size: 18px;
-                border: none;
-            }
-
-            .navbar {
-                justify-content: space-between;
+            .hamburger {
+                display: block; /* Show hamburger icon on smaller screens */
             }
         }
-
-        @media (min-width: 769px) {
-            .menu-toggle {
-                display: none;
-            }
-
-            nav ul {
-                display: flex;
-            }
-
-            nav ul li:hover .dropdown {
-                display: block;
-                position: absolute;
-                background-color: white;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-                z-index: 1;
-                min-width: 200px;
-                padding: 10px 0;
-            }
-
-            nav ul li .dropdown a {
-                color: #333;
-                padding: 10px 15px;
-                display: block;
-                text-align: left;
-            }
-
-            nav ul li .dropdown a:hover {
-                background-color: #f0f0f0;
-            }
-        }
-
     </style>
 </head>
 <body>
 
     <header>
         <div class="navbar">
-            <span class="logo">CheapyLoan</span>
-            <button class="menu-toggle">☰</button>
             <nav>
                 <ul>
                     <li>
                         <a href="#">About Us</a>
-                        <span class="dropdown-arrow">▼</span>
-                        <div class="dropdown">
-                            <a href="#">Our Story</a>
-                            <a href="#">Team</a>
-                            <a href="#">Careers</a>
+                        <div class="dropdown-wrapper">
+                            <div class="dropdown">
+                                <a href="#">Our Story</a>
+                                <a href="#">Team</a>
+                                <a href="#">Careers</a>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <a href="#">Membership</a>
-                        <span class="dropdown-arrow">▼</span>
-                        <div class="dropdown">
-                            <a href="#">Pricing</a>
-                            <a href="#">Benefits</a>
+                        <div class="dropdown-wrapper">
+                            <div class="dropdown">
+                                <a href="#">Pricing</a>
+                                <a href="#">Benefits</a>
+                                <a href="#">Benefits</a>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <a href="#">Products & Services</a>
-                        <span class="dropdown-arrow">▼</span>
-                        <div class="dropdown">
-                            <a href="#">Loan Products</a>
-                            <a href="#">Savings</a>
+                        <div class="dropdown-wrapper">
+                            <div class="dropdown">
+                                <a href="#">Loan Products</a>
+                                <a href="#">Savings</a>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <a href="#">Resources</a>
-                        <span class="dropdown-arrow">▼</span>
-                        <div class="dropdown">
-                            <a href="#">Blog</a>
-                            <a href="#">FAQs</a>
+                        <div class="dropdown-wrapper">
+                            <div class="dropdown">
+                                <a href="#">Blog</a>
+                                <a href="#">FAQs</a>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <a href="#">Contact</a>
-                        <span class="dropdown-arrow">▼</span>
-                        <div class="dropdown">
-                            <a href="#">Support</a>
-                            <a href="#">Locations</a>
+                        <div class="dropdown-wrapper">
+                            <div class="dropdown">
+                                <a href="#">Support</a>
+                                <a href="#">Locations</a>
+                            </div>
                         </div>
                     </li>
                     <li><a href="#" class="sign-up">Sign Up Free</a></li>
                 </ul>
             </nav>
         </div>
-        <div class="separator"></div>
+        <div class="separator"></div> <!-- Separator Line -->
+
+        <!-- Hamburger Icon for Small Screens -->
+        <div class="hamburger">&#9776;</div>
+        
+        <!-- Drawer for Small Screens -->
+        <div class="drawer">
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Membership</a></li>
+                <li><a href="#">Products & Services</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#" class="sign-up">Sign Up Free</a></li>
+            </ul>
+        </div>
     </header>
 
     <section class="hero">
@@ -296,20 +329,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const menuToggle = document.querySelector('.menu-toggle');
-            const nav = document.querySelector('nav ul');
-            const dropdownArrows = document.querySelectorAll('.dropdown-arrow');
+            const drawer = document.querySelector('.drawer');
+            const hamburger = document.querySelector('.hamburger');
 
-            // Toggle menu visibility on mobile
-            menuToggle.addEventListener('click', () => {
-                nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+            hamburger.addEventListener('click', () => {
+                drawer.classList.toggle('open'); // Toggle drawer visibility
             });
 
-            // Toggle dropdown visibility on arrow click
-            dropdownArrows.forEach(arrow => {
-                arrow.addEventListener('click', (e) => {
-                    const dropdown = e.target.nextElementSibling;
-                    dropdown.classList.toggle('open');
+            const navItems = document.querySelectorAll('nav ul li a');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (event) => {
+                    // Prevent default action for demonstration purposes
+                    event.preventDefault();
+
+                    // Remove 'active' class from all menu items
+                    navItems.forEach(navItem => navItem.parentElement.classList.remove('active'));
+
+                    // Add 'active' class to the clicked item
+                    item.parentElement.classList.add('active');
                 });
             });
         });
