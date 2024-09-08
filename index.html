@@ -69,18 +69,17 @@
             }
         }
 
-        /* Video frame size and padding for smaller screens (phones) */
+        /* Larger video frame size for smaller screens (phones) */
         @media (max-width: 768px) {
             #videoContainer {
                 flex-direction: column;
             }
 
             video {
-                width: 90vw; /* Take up 90% of the viewport width */
-                height: auto;
+                width: 100vw; /* Take the full width of the viewport */
+                height: calc(100vh - 200px); /* Nearly full height, accounting for headers/inputs */
                 max-height: 90vh;
-                object-fit: cover;
-                padding-right: 5vw; /* Adds space from the right edge */
+                object-fit: cover; /* Ensure the video looks good even when stretched */
             }
         }
     </style>
