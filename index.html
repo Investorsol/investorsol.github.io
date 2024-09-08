@@ -61,25 +61,20 @@
             background-color: #45a049;
         }
 
-        /* Default video size for larger screens (PC) */
-        @media (min-width: 769px) {
-            video {
-                width: 400px;
-                height: auto;
-            }
-        }
-
-        /* Larger video frame size for smaller screens (phones) */
+        /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             #videoContainer {
                 flex-direction: column;
             }
 
             video {
-                width: 100vw; /* Take the full width of the viewport */
-                height: calc(100vh - 200px); /* Nearly full height, accounting for headers/inputs */
-                max-height: 90vh;
-                object-fit: cover; /* Ensure the video looks good even when stretched */
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            video {
+                width: 100%;
             }
         }
     </style>
