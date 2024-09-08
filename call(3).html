@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerJS Video Call</title>
+</head>
+<body>
+    <h1>Simple Video Call with PeerJS</h1>
+
+    <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
+    <button id="callButton">Call</button>
+    <button id="endCallButton" disabled>End Call</button>
+
+    <p>Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
+
+    <!-- Display the local and remote video streams -->
+    <video id="localVideo" autoplay muted controls playsinline></video>
+    <video id="remoteVideo" autoplay controls playsinline></video>
+
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+    <script>
+        // Create a new Peer object with a TURN server
+        const peer = new Peer({
+            config: {
+                'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' },
+                    { url: 'turn:turn.bistri.com:80', credential: 'homeo', username: 'homeo' }
+                ]
+            }
+        });
+
+        peer.on('open', (id) => {
+            console.log('My peer ID is: ' + id);
+            // Display Peer ID in a text input for easy copying
+            document.getElementById('peerIdDisplay').value = id;
+        });
+
+        const callButton = document.getElementById('callButton');
+        const endCallButton = document.getElementById('endCallButton');
+        const peerIdInput = document.getElementById('peerIdInput');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+
+        let localStream;
+        let currentCall;
+
+        // Get user media (audio and video) when the page loads
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localStream = stream;
+                localVideo.srcObject = stream; // Show the local video stream
+            })
+            .catch(error => console.error('Error accessing media devices.', error));
+
+        peer.on('call', (call) => {
+            // Answer the call and provide our audio/video stream
+            call.answer(localStream);
+
+            // Play the remote audio/video stream when received
+            call.on('stream', (remoteStream) => {
+                console.log('Received remote stream');
+                remoteVideo.srcObject = remoteStream; // Show the remote video stream
+            });
+
+            // Handle call close event
+            call.on('close', () => {
+                console.log('Call ended.');
+                resetCallUI();
+            });
+
+            // Save the call to handle it later
+            currentCall = call;
+
+            // Update UI
+            callButton.disabled = true;
+            endCallButton.disabled = false;
+        });
+
+        callButton.onclick = () => {
+            const peerId = peerIdInput.value;
+            if (!peerId) {
+                alert('Please enter a valid Peer ID.');
+                return;
+            }
+
+            // Call the peer with the specified ID
+            const call = peer.call(peerId, localStream);
+
+            // Play the remote audio/video stream when received
+            call.on('stream', (remoteStream) => {
+                console.log('Received remote stream');
+                remoteVideo.srcObject = remoteStream; // Show the remote video stream
+            });
+
+            // Handle call close event
+            call.on('close', () => {
+                console.log('Call ended.');
+                resetCallUI();
+            });
+
+            // Save the call to handle it later
+            currentCall = call;
+
+            // Update UI
+            callButton.disabled = true;
+            endCallButton.disabled = false;
+        };
+
+        endCallButton.onclick = () => {
+            if (currentCall) {
+                currentCall.close();
+                currentCall = null;
+            }
+
+            // Reset the UI after ending the call
+            resetCallUI();
+        };
+
+        peer.on('error', (err) => {
+            console.error('PeerJS Error:', err);
+            alert('An error occurred: ' + err.type);
+        });
+
+        // Reset call UI
+        function resetCallUI() {
+            callButton.disabled = false;
+            endCallButton.disabled = true;
+        }
+    </script>
+</body>
+</html>
