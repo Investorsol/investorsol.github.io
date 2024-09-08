@@ -5,6 +5,63 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeerJS Video Call</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        input[type="text"] {
+            width: 200px;
+        }
+
+        video {
+            width: 45%;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin: 20px 10px;
+            display: none;
+        }
+
+        #localVideo {
+            display: block;
+        }
+
+        #videoContainer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        button:hover:enabled {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <h1>Simple Video Call with PeerJS</h1>
@@ -15,9 +72,11 @@
 
     <p>Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
 
-    <!-- Display the local and remote video streams -->
-    <video id="localVideo" autoplay muted controls playsinline></video>
-    <video id="remoteVideo" autoplay controls playsinline></video>
+    <!-- Video container for local and remote streams -->
+    <div id="videoContainer">
+        <video id="localVideo" autoplay muted controls playsinline></video>
+        <video id="remoteVideo" autoplay controls playsinline></video>
+    </div>
 
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
@@ -55,30 +114,27 @@
             })
             .catch(error => console.error('Error accessing media devices.', error));
 
+        // Function to handle incoming calls
         peer.on('call', (call) => {
-            // Answer the call and provide our audio/video stream
             call.answer(localStream);
 
-            // Play the remote audio/video stream when received
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
-                remoteVideo.srcObject = remoteStream; // Show the remote video stream
+                remoteVideo.srcObject = remoteStream;
+                showRemoteVideo();
             });
 
-            // Handle call close event
             call.on('close', () => {
                 console.log('Call ended.');
                 resetCallUI();
             });
 
-            // Save the call to handle it later
             currentCall = call;
-
-            // Update UI
             callButton.disabled = true;
             endCallButton.disabled = false;
         });
 
+        // Function to initiate a call
         callButton.onclick = () => {
             const peerId = peerIdInput.value;
             if (!peerId) {
@@ -86,25 +142,20 @@
                 return;
             }
 
-            // Call the peer with the specified ID
             const call = peer.call(peerId, localStream);
 
-            // Play the remote audio/video stream when received
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
-                remoteVideo.srcObject = remoteStream; // Show the remote video stream
+                remoteVideo.srcObject = remoteStream;
+                showRemoteVideo();
             });
 
-            // Handle call close event
             call.on('close', () => {
                 console.log('Call ended.');
                 resetCallUI();
             });
 
-            // Save the call to handle it later
             currentCall = call;
-
-            // Update UI
             callButton.disabled = true;
             endCallButton.disabled = false;
         };
@@ -114,8 +165,6 @@
                 currentCall.close();
                 currentCall = null;
             }
-
-            // Reset the UI after ending the call
             resetCallUI();
         };
 
@@ -128,6 +177,14 @@
         function resetCallUI() {
             callButton.disabled = false;
             endCallButton.disabled = true;
+            remoteVideo.style.display = 'none';
+            localVideo.style.display = 'block';
+        }
+
+        // Show only remote video once a call is established
+        function showRemoteVideo() {
+            localVideo.style.display = 'none';
+            remoteVideo.style.display = 'block';
         }
     </script>
 </body>
