@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Video Call</title>
+    <title>PeerJS Video Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,23 +69,24 @@
             }
         }
 
-        /* Larger video frame size for smaller screens (phones) */
+        /* Video frame size and padding for smaller screens (phones) */
         @media (max-width: 768px) {
             #videoContainer {
                 flex-direction: column;
             }
 
             video {
-                width: 100vw; /* Take the full width of the viewport */
-                height: calc(100vh - 200px); /* Nearly full height, accounting for headers/inputs */
+                width: 90vw; /* Take up 90% of the viewport width */
+                height: auto;
                 max-height: 90vh;
-                object-fit: cover; /* Ensure the video looks good even when stretched */
+                object-fit: cover;
+                padding-right: 5vw; /* Adds space from the right edge */
             }
         }
     </style>
 </head>
 <body>
-    <h1>Simple Video Call </h1>
+    <h1>Simple Video Call with PeerJS</h1>
 
     <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
     <button id="callButton">Call</button>
