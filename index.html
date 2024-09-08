@@ -8,19 +8,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            text-align: center;
             background-color: #f0f2f5;
             margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
         }
 
         h1 {
             color: #333;
-            margin-top: 20px;
         }
 
         input, button {
@@ -34,19 +29,20 @@
         }
 
         video {
-            border: none;
-            border-radius: 0;
-            margin: 0;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin: 20px 10px;
             display: none;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
+        }
+
+        #localVideo {
+            display: block;
         }
 
         #videoContainer {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
@@ -65,39 +61,42 @@
             background-color: #45a049;
         }
 
-        /* Position the End Call button */
-        #endCallButton {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            font-size: 18px;
-            z-index: 10;
+        /* Default video size for larger screens (PC) */
+        @media (min-width: 769px) {
+            video {
+                width: 400px;
+                height: auto;
+            }
         }
 
-        #callButton {
-            z-index: 1000;
-        }
+        /* Larger video frame size for smaller screens (phones) */
+        @media (max-width: 768px) {
+            #videoContainer {
+                flex-direction: column;
+            }
 
-        /* Hide unnecessary elements after call starts */
-        .hidden {
-            display: none;
+            video {
+                width: 100vw; /* Take the full width of the viewport */
+                height: calc(100vh - 200px); /* Nearly full height, accounting for headers/inputs */
+                max-height: 90vh;
+                object-fit: cover; /* Ensure the video looks good even when stretched */
+            }
         }
     </style>
 </head>
 <body>
-    <h1 id="headerText">Simple Video Call with PeerJS</h1>
+    <h1>Simple Video Call with PeerJS</h1>
 
     <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
     <button id="callButton">Call</button>
     <button id="endCallButton" disabled>End Call</button>
 
-    <p id="peerIdDisplayText">Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
+    <p>Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
 
     <!-- Video container for local and remote streams -->
     <div id="videoContainer">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" autoplay muted controls playsinline></video>
+        <video id="remoteVideo" autoplay controls playsinline></video>
     </div>
 
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -143,7 +142,7 @@
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
                 remoteVideo.srcObject = remoteStream;
-                showFullScreenCallUI();
+                showRemoteVideo();
             });
 
             call.on('close', () => {
@@ -169,7 +168,7 @@
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
                 remoteVideo.srcObject = remoteStream;
-                showFullScreenCallUI();
+                showRemoteVideo();
             });
 
             call.on('close', () => {
@@ -201,24 +200,12 @@
             endCallButton.disabled = true;
             remoteVideo.style.display = 'none';
             localVideo.style.display = 'block';
-
-            // Show inputs and header text
-            document.getElementById('headerText').classList.remove('hidden');
-            document.getElementById('peerIdInput').classList.remove('hidden');
-            document.getElementById('peerIdDisplayText').classList.remove('hidden');
         }
 
-        // Show full-screen video during a call
-        function showFullScreenCallUI() {
+        // Show only remote video when a call is active
+        function showRemoteVideo() {
             localVideo.style.display = 'none';
             remoteVideo.style.display = 'block';
-            remoteVideo.classList.add('fullscreen');
-            endCallButton.style.display = 'block';
-
-            // Hide unnecessary elements
-            document.getElementById('headerText').classList.add('hidden');
-            document.getElementById('peerIdInput').classList.add('hidden');
-            document.getElementById('peerIdDisplayText').classList.add('hidden');
         }
     </script>
 </body>
