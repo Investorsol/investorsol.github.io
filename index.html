@@ -28,34 +28,21 @@
             width: 200px;
         }
 
-        #videoContainer {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            height: 80vh; /* Adjust height as needed */
-        }
-
         video {
             border: 2px solid #333;
             border-radius: 8px;
-            display: block;
+            margin: 20px 10px;
+            display: none;
         }
 
         #localVideo {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 30%; /* Smaller frame */
-            height: auto;
-            border-radius: 10px;
+            display: block;
         }
 
-        #remoteVideo {
-            width: 100%; /* Full width for remote video */
-            max-height: 100%;
-            border-radius: 10px;
+        #videoContainer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
@@ -82,19 +69,11 @@
             video {
                 width: 90%;
             }
-
-            #localVideo {
-                width: 40%; /* Adjust for smaller screens */
-            }
         }
 
         @media (max-width: 480px) {
             video {
                 width: 100%;
-            }
-
-            #localVideo {
-                width: 50%; /* Adjust for very small screens */
             }
         }
     </style>
@@ -252,10 +231,10 @@
             resetCallUI();
         };
 
-        // Show both remote and local videos
+        // Show only remote video during a call
         function showRemoteVideo() {
-            localVideo.style.display = 'block';
-            remoteVideo.style.width = '100%';
+            localVideo.style.display = 'none';
+            remoteVideo.style.display = 'block';
         }
 
         // Reset UI after call ends
