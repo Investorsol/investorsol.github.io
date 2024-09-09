@@ -124,9 +124,9 @@
             });
         }
 
-        // Fetch ICE servers and initialize PeerJS
+        // Initialize PeerJS after fetching ICE servers
         getIceServers().then(iceServers => {
-            console.log("Initializing PeerJS with ICE servers...");  // Debug log for PeerJS initialization
+            // Initialize PeerJS with ICE servers
             peer = new Peer({
                 config: {
                     iceServers: iceServers
@@ -155,7 +155,7 @@
                     alert('Error accessing media devices: ' + error.message);
                 });
 
-            // Call handling
+            // Handle incoming calls
             peer.on('call', (call) => {
                 console.log("Incoming call...");  // Debug log for incoming call
                 call.answer(localStream);
