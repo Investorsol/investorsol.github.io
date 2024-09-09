@@ -85,10 +85,7 @@
     <button id="callButton">Call</button>
     <button id="endCallButton" disabled>End Call</button>
 
-    <p>Your Peer ID: 
-        <input type="text" id="peerIdDisplay" readonly>
-        <button id="copyPeerIdButton">Copy</button>
-    </p>
+    <p>Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
 
     <div id="videoContainer">
         <video id="localVideo" autoplay muted controls playsinline></video>
@@ -106,8 +103,6 @@
         const peerIdInput = document.getElementById('peerIdInput');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
-        const peerIdDisplay = document.getElementById('peerIdDisplay');
-        const copyPeerIdButton = document.getElementById('copyPeerIdButton');
 
         // Function to fetch Xirsys ICE servers
         function getIceServers() {
@@ -150,7 +145,7 @@
 
             peer.on('open', (id) => {
                 console.log('My peer ID is: ' + id);
-                peerIdDisplay.value = id;
+                document.getElementById('peerIdDisplay').value = id;
             });
 
             peer.on('error', (err) => {
@@ -244,13 +239,6 @@
             remoteVideo.style.display = 'none';
             localVideo.style.display = 'block';
         }
-
-        // Copy Peer ID to clipboard
-        copyPeerIdButton.addEventListener('click', () => {
-            peerIdDisplay.select();
-            document.execCommand('copy');
-            alert('Peer ID copied to clipboard!');
-        });
 
     </script>
 </body>
