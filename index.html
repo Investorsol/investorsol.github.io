@@ -103,29 +103,18 @@
         const peerIdInput = document.getElementById('peerIdInput');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
-        const peerIdDisplay = document.getElementById('peerIdDisplay');
 
         // Function to fetch Xirsys ICE servers
         function getIceServers() {
             return new Promise((resolve, reject) => {
                 let xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            try {
-                                let res = JSON.parse(xhr.responseText);
-                                if (res.v && res.v.iceServers) {
-                                    console.log("ICE servers fetched: ", res.v.iceServers);  // Debug log for ICE servers
-                                    resolve(res.v.iceServers);
-                                } else {
-                                    throw new Error('Invalid ICE servers response');
-                                }
-                            } catch (e) {
-                                reject('Error parsing ICE servers response: ' + e.message);
-                            }
-                        } else {
-                            reject('Error fetching ICE servers: ' + xhr.statusText);
-                        }
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        let res = JSON.parse(xhr.responseText);
+                        console.log("ICE servers fetched: ", res.v.iceServers);  // Debug log for ICE servers
+                        resolve(res.v.iceServers);
+                    } else if (xhr.readyState == 4) {
+                        reject('Error fetching ICE servers');
                     }
                 };
                 xhr.open("PUT", "https://global.xirsys.net/_turn/MyFirstApp", true);
@@ -156,7 +145,7 @@
 
             peer.on('open', (id) => {
                 console.log('My peer ID is: ' + id);
-                peerIdDisplay.value = id;
+                document.getElementById('peerIdDisplay').value = id;
             });
 
             peer.on('error', (err) => {
@@ -199,7 +188,6 @@
 
         }).catch(err => {
             console.error('Error initializing PeerJS with Xirsys ICE servers:', err);
-            alert('Error initializing PeerJS: ' + err);
         });
 
         // Make a call
@@ -251,6 +239,7 @@
             remoteVideo.style.display = 'none';
             localVideo.style.display = 'block';
         }
+
     </script>
 </body>
 </html>
