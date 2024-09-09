@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Video Call</title>
+    <title>Video Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,7 +80,7 @@
     </style>
 </head>
 <body>
-    <h1>Simple Video Call </h1>
+    <h1>Simple Video Call</h1>
 
     <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
     <button id="callButton">Call</button>
@@ -97,111 +97,134 @@
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
     <script>
-        // Create a new Peer object with a TURN server
-        const peer = new Peer({
-            config: {
-                'iceServers': [
-                    { url: 'stun:stun.l.google.com:19302' },
-                    { url: 'turn:turn.bistri.com:80', credential: 'homeo', username: 'homeo' }
-                ]
-            }
-        });
-
-        peer.on('open', (id) => {
-            console.log('My peer ID is: ' + id);
-            // Display Peer ID in a text input for easy copying
-            document.getElementById('peerIdDisplay').value = id;
-        });
-
-        const callButton = document.getElementById('callButton');
-        const endCallButton = document.getElementById('endCallButton');
-        const peerIdInput = document.getElementById('peerIdInput');
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
-
-        let localStream;
-        let currentCall;
-
-        // Get user media (audio and video) when the page loads
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(stream => {
-                localStream = stream;
-                localVideo.srcObject = stream; // Show the local video stream
-            })
-            .catch(error => console.error('Error accessing media devices.', error));
-
-        // Handle incoming calls
-        peer.on('call', (call) => {
-            call.answer(localStream);
-
-            call.on('stream', (remoteStream) => {
-                console.log('Received remote stream');
-                remoteVideo.srcObject = remoteStream;
-                showRemoteVideo();
+        let peer;
+        
+        // Function to fetch Xirsys ICE servers
+        function getIceServers() {
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        let res = JSON.parse(xhr.responseText);
+                        resolve(res.v.iceServers); // Resolve with the ICE servers
+                    } else if (xhr.readyState == 4) {
+                        reject('Error fetching ICE servers');
+                    }
+                };
+                xhr.open("PUT", "https://global.xirsys.net/_turn/MyFirstApp", true);
+                xhr.setRequestHeader("Authorization", "Basic " + btoa("investorsol:73b382b2-6e85-11ef-8200-0242ac130003"));
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify({ "format": "urls" }));
             });
-
-            call.on('close', () => {
-                console.log('Call ended.');
-                resetCallUI();
-            });
-
-            currentCall = call;
-            callButton.disabled = true;
-            endCallButton.disabled = false;
-        });
-
-        // Function to make a call
-        callButton.onclick = () => {
-            const peerId = peerIdInput.value;
-            if (!peerId) {
-                alert('Please enter a valid Peer ID.');
-                return;
-            }
-
-            const call = peer.call(peerId, localStream);
-
-            call.on('stream', (remoteStream) => {
-                console.log('Received remote stream');
-                remoteVideo.srcObject = remoteStream;
-                showRemoteVideo();
-            });
-
-            call.on('close', () => {
-                console.log('Call ended.');
-                resetCallUI();
-            });
-
-            currentCall = call;
-            callButton.disabled = true;
-            endCallButton.disabled = false;
-        };
-
-        endCallButton.onclick = () => {
-            if (currentCall) {
-                currentCall.close();
-                currentCall = null;
-            }
-            resetCallUI();
-        };
-
-        peer.on('error', (err) => {
-            console.error('PeerJS Error:', err);
-            alert('An error occurred: ' + err.type);
-        });
-
-        // Reset call UI
-        function resetCallUI() {
-            callButton.disabled = false;
-            endCallButton.disabled = true;
-            remoteVideo.style.display = 'none';
-            localVideo.style.display = 'block';
         }
 
-        // Show only remote video when a call is active
-        function showRemoteVideo() {
-            localVideo.style.display = 'none';
-            remoteVideo.style.display = 'block';
-        }
+        // Initialize PeerJS with the fetched ICE servers
+        getIceServers().then(iceServers => {
+            peer = new Peer({
+                config: {
+                    iceServers: iceServers
+                }
+            });
+
+            peer.on('open', (id) => {
+                console.log('My peer ID is: ' + id);
+                // Display Peer ID in a text input for easy copying
+                document.getElementById('peerIdDisplay').value = id;
+            });
+
+            const callButton = document.getElementById('callButton');
+            const endCallButton = document.getElementById('endCallButton');
+            const peerIdInput = document.getElementById('peerIdInput');
+            const localVideo = document.getElementById('localVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+
+            let localStream;
+            let currentCall;
+
+            // Get user media (audio and video) when the page loads
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(stream => {
+                    localStream = stream;
+                    localVideo.srcObject = stream; // Show the local video stream
+                })
+                .catch(error => console.error('Error accessing media devices.', error));
+
+            // Handle incoming calls
+            peer.on('call', (call) => {
+                call.answer(localStream);
+
+                call.on('stream', (remoteStream) => {
+                    console.log('Received remote stream');
+                    remoteVideo.srcObject = remoteStream;
+                    showRemoteVideo();
+                });
+
+                call.on('close', () => {
+                    console.log('Call ended.');
+                    resetCallUI();
+                });
+
+                currentCall = call;
+                callButton.disabled = true;
+                endCallButton.disabled = false;
+            });
+
+            // Function to make a call
+            callButton.onclick = () => {
+                const peerId = peerIdInput.value;
+                if (!peerId) {
+                    alert('Please enter a valid Peer ID.');
+                    return;
+                }
+
+                const call = peer.call(peerId, localStream);
+
+                call.on('stream', (remoteStream) => {
+                    console.log('Received remote stream');
+                    remoteVideo.srcObject = remoteStream;
+                    showRemoteVideo();
+                });
+
+                call.on('close', () => {
+                    console.log('Call ended.');
+                    resetCallUI();
+                });
+
+                currentCall = call;
+                callButton.disabled = true;
+                endCallButton.disabled = false;
+            };
+
+            endCallButton.onclick = () => {
+                if (currentCall) {
+                    currentCall.close();
+                    currentCall = null;
+                }
+                resetCallUI();
+            };
+
+            peer.on('error', (err) => {
+                console.error('PeerJS Error:', err);
+                alert('An error occurred: ' + err.type);
+            });
+
+            // Reset call UI
+            function resetCallUI() {
+                callButton.disabled = false;
+                endCallButton.disabled = true;
+                remoteVideo.style.display = 'none';
+                localVideo.style.display = 'block';
+            }
+
+            // Show only remote video when a call is active
+            function showRemoteVideo() {
+                localVideo.style.display = 'none';
+                remoteVideo.style.display = 'block';
+            }
+        }).catch(err => {
+            console.error('Error initializing PeerJS with Xirsys ICE servers:', err);
+        });
+
     </script>
 </body>
 </html>
