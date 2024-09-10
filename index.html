@@ -101,6 +101,36 @@
                 height: 60px;
             }
         }
+
+        .fullscreen-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .fullscreen-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .fullscreen-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
@@ -120,9 +150,10 @@
         <button id="acceptCallButton">Accept Call</button>
     </div>
 
-    <div id="videoContainer">
+    <div id="videoContainer" class="fullscreen-container">
         <video id="localVideo" autoplay muted playsinline></video>
         <video id="remoteVideo" autoplay playsinline></video>
+        <button class="fullscreen-button" id="fullscreenButton">Full Screen</button>
     </div>
 
     <audio id="ringtone" src="./images/ringtone.mp3" loop></audio>
@@ -143,6 +174,8 @@
         const incomingCallMessage = document.getElementById('incomingCallMessage');
         const acceptCallButton = document.getElementById('acceptCallButton');
         const ringtone = document.getElementById('ringtone');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        const videoContainer = document.getElementById('videoContainer');
 
         // Fetch ICE servers and initialize PeerJS
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -252,6 +285,17 @@
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
             });
+        };
+
+        // Full-screen functionality
+        fullscreenButton.onclick = () => {
+            if (videoContainer.classList.contains('fullscreen')) {
+                videoContainer.classList.remove('fullscreen');
+                fullscreenButton.textContent = 'Full Screen';
+            } else {
+                videoContainer.classList.add('fullscreen');
+                fullscreenButton.textContent = 'Exit Full Screen';
+            }
         };
 
     </script>
