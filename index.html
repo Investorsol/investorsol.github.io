@@ -28,33 +28,17 @@
             width: 200px;
         }
 
-        #videoContainer {
-            position: relative;
-            display: inline-block;
-            margin: 20px;
+        video {
             border: 2px solid #333;
             border-radius: 8px;
-            width: 640px; /* Ensure container is large enough */
-            height: 480px; /* Ensure container is large enough */
-        }
-
-        #localVideo {
-            position: absolute;
-            width: 160px;
-            height: 120px;
-            border: 2px solid #fff;
-            bottom: 10px;
-            right: 10px;
-            z-index: 2;
-            border-radius: 5px;
-            display: none; /* Initially hidden until call starts */
-        }
-
-        #remoteVideo {
-            width: 100%;
-            height: 100%; /* Ensure it fills container */
-            border-radius: 8px;
+            margin: 20px 10px;
             display: none;
+        }
+
+        #videoContainer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
@@ -91,16 +75,18 @@
         }
 
         @media (max-width: 768px) {
-            #localVideo {
-                width: 100px;
-                height: 75px;
+            #videoContainer {
+                flex-direction: column;
+            }
+
+            video {
+                width: 90%;
             }
         }
 
         @media (max-width: 480px) {
-            #localVideo {
-                width: 80px;
-                height: 60px;
+            video {
+                width: 100%;
             }
         }
     </style>
@@ -123,8 +109,8 @@
     </div>
 
     <div id="videoContainer">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" autoplay muted controls playsinline></video>
+        <video id="remoteVideo" autoplay controls playsinline></video>
     </div>
 
     <audio id="ringtone" src="./images/ringtone.mp3" loop></audio>
@@ -150,7 +136,6 @@
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 localStream = stream;
-                localVideo.srcObject = stream;
                 console.log("Local video stream set.");
             })
             .catch(error => {
@@ -180,6 +165,7 @@
                 call.on('stream', (remoteStream) => {
                     console.log('Received remote stream');
                     remoteVideo.srcObject = remoteStream;
+                    localVideo.srcObject = localStream; // Show local video after acceptance
                     showVideos();
                 });
 
@@ -208,6 +194,7 @@
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
                 remoteVideo.srcObject = remoteStream;
+                localVideo.srcObject = localStream;
                 showVideos();
             });
 
