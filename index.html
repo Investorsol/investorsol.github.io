@@ -61,6 +61,15 @@
             background-color: #45a049;
         }
 
+        .copy-btn {
+            background-color: #007BFF;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+
         @media (max-width: 768px) {
             #videoContainer {
                 flex-direction: column;
@@ -85,7 +94,10 @@
     <button id="callButton">Call</button>
     <button id="endCallButton" disabled>End Call</button>
 
-    <p>Your Peer ID: <input type="text" id="peerIdDisplay" readonly></p>
+    <p>Your Peer ID: 
+        <input type="text" id="peerIdDisplay" readonly>
+        <button class="copy-btn" id="copyButton">Copy</button>
+    </p>
 
     <div id="videoContainer">
         <video id="localVideo" autoplay muted controls playsinline></video>
@@ -103,6 +115,8 @@
         const peerIdInput = document.getElementById('peerIdInput');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
+        const copyButton = document.getElementById('copyButton');
+        const peerIdDisplay = document.getElementById('peerIdDisplay');
 
         // Function to fetch Xirsys ICE servers
         function getIceServers() {
@@ -117,10 +131,10 @@
                         reject('Error fetching ICE servers');
                     }
                 };
-                 xhr.open("PUT", "https://global.xirsys.net/_turn/MyFirstApp", true);
-                 xhr.setRequestHeader ("Authorization", "Basic " + btoa("boysolo:25004894-6f4d-11ef-ae63-0242ac130003") );
-                 xhr.setRequestHeader ("Content-Type", "application/json");
-                 xhr.send( JSON.stringify({"format": "urls"}) );
+                xhr.open("PUT", "https://global.xirsys.net/_turn/MyFirstApp", true);
+                xhr.setRequestHeader("Authorization", "Basic " + btoa("boysolo:25004894-6f4d-11ef-ae63-0242ac130003"));
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify({"format": "urls"}));
             });
         }
 
@@ -145,7 +159,7 @@
 
             peer.on('open', (id) => {
                 console.log('My peer ID is: ' + id);
-                document.getElementById('peerIdDisplay').value = id;
+                peerIdDisplay.value = id;
             });
 
             peer.on('error', (err) => {
@@ -239,6 +253,18 @@
             remoteVideo.style.display = 'none';
             localVideo.style.display = 'block';
         }
+
+        // Copy Peer ID to clipboard
+        copyButton.onclick = () => {
+            peerIdDisplay.select();
+            peerIdDisplay.setSelectionRange(0, 99999);  // For mobile devices
+
+            navigator.clipboard.writeText(peerIdDisplay.value).then(() => {
+                alert('Peer ID copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        };
 
     </script>
 </body>
