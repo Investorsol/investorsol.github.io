@@ -102,31 +102,9 @@
             }
         }
 
-        .fullscreen-container:-webkit-full-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
-        }
-
-        .fullscreen-container:fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
-        }
-
-        .fullscreen-container:-ms-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
+        .fullscreen-container {
+            position: relative;
+            display: inline-block;
         }
 
         .fullscreen-button {
@@ -143,6 +121,15 @@
 
         .fullscreen-button:hover {
             background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
         }
     </style>
 </head>
@@ -302,26 +289,12 @@
 
         // Full-screen functionality
         fullscreenButton.onclick = () => {
-            if (!document.fullscreenElement) {
-                // Enter full-screen mode
-                if (videoContainer.requestFullscreen) {
-                    videoContainer.requestFullscreen();
-                } else if (videoContainer.webkitRequestFullscreen) { // Safari
-                    videoContainer.webkitRequestFullscreen();
-                } else if (videoContainer.msRequestFullscreen) { // IE11
-                    videoContainer.msRequestFullscreen();
-                }
-                fullscreenButton.textContent = 'Exit Full Screen';
-            } else {
-                // Exit full-screen mode
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { // Safari
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { // IE11
-                    document.msExitFullscreen();
-                }
+            if (videoContainer.classList.contains('fullscreen')) {
+                videoContainer.classList.remove('fullscreen');
                 fullscreenButton.textContent = 'Full Screen';
+            } else {
+                videoContainer.classList.add('fullscreen');
+                fullscreenButton.textContent = 'Exit Full Screen';
             }
         };
 
