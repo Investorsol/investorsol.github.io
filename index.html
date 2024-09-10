@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Call</title>
     <style>
@@ -32,10 +33,6 @@
             border-radius: 8px;
             margin: 20px 10px;
             display: none;
-        }
-
-        #localVideo {
-            display: block;
         }
 
         #videoContainer {
@@ -69,8 +66,12 @@
             background-color: #0056b3;
         }
 
-        .hidden {
+        #incomingCallMessage {
+            background-color: #ffcc00;
+            padding: 15px;
+            border-radius: 5px;
             display: none;
+            margin-bottom: 20px;
         }
 
         @media (max-width: 768px) {
@@ -96,19 +97,23 @@
     <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
     <button id="callButton">Call</button>
     <button id="endCallButton" disabled>End Call</button>
-    <button id="acceptCallButton" class="hidden">Accept Call</button>
 
     <p>Your Peer ID: 
         <input type="text" id="peerIdDisplay" readonly>
         <button class="copy-btn" id="copyButton">Copy</button>
     </p>
 
+    <div id="incomingCallMessage">
+        <p>Incoming call...</p>
+        <button id="acceptCallButton">Accept Call</button>
+    </div>
+
     <div id="videoContainer">
         <video id="localVideo" autoplay muted controls playsinline></video>
         <video id="remoteVideo" autoplay controls playsinline></video>
     </div>
 
-    <audio id="ringtone" src="./images/ringtone.mp3" loop class="hidden"></audio>
+    <audio id="ringtone" src="./images/ringtone.mp3" loop></audio>
 
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
@@ -118,19 +123,19 @@
         let currentCall;
         const callButton = document.getElementById('callButton');
         const endCallButton = document.getElementById('endCallButton');
-        const acceptCallButton = document.getElementById('acceptCallButton');
         const peerIdInput = document.getElementById('peerIdInput');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const copyButton = document.getElementById('copyButton');
         const peerIdDisplay = document.getElementById('peerIdDisplay');
+        const incomingCallMessage = document.getElementById('incomingCallMessage');
+        const acceptCallButton = document.getElementById('acceptCallButton');
         const ringtone = document.getElementById('ringtone');
 
         // Fetch ICE servers and initialize PeerJS
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 localStream = stream;
-                localVideo.srcObject = stream;
                 console.log("Local video stream set.");
             })
             .catch(error => {
@@ -147,24 +152,21 @@
 
         peer.on('call', (call) => {
             console.log("Incoming call...");
-            
-            // Show ringtone and accept button immediately
-            ringtone.classList.remove('hidden');
-            ringtone.play();
-            acceptCallButton.classList.remove('hidden');
+            ringtone.play(); // Play ringtone
+            incomingCallMessage.style.display = 'block'; // Show the incoming call message
 
             acceptCallButton.onclick = () => {
                 ringtone.pause(); // Stop ringtone
-                ringtone.currentTime = 0; // Reset the audio
-                
-                // Hide accept button after accepting call
-                acceptCallButton.classList.add('hidden');
+                ringtone.currentTime = 0;
+                incomingCallMessage.style.display = 'none'; // Hide incoming call message
 
-                call.answer(localStream);
+                call.answer(localStream); // Answer the call
+
                 call.on('stream', (remoteStream) => {
                     console.log('Received remote stream');
                     remoteVideo.srcObject = remoteStream;
-                    showRemoteVideo();
+                    localVideo.srcObject = localStream; // Show local video after acceptance
+                    showVideos();
                 });
 
                 call.on('close', () => {
@@ -192,7 +194,8 @@
             call.on('stream', (remoteStream) => {
                 console.log('Received remote stream');
                 remoteVideo.srcObject = remoteStream;
-                showRemoteVideo();
+                localVideo.srcObject = localStream;
+                showVideos();
             });
 
             call.on('close', () => {
@@ -214,9 +217,9 @@
             resetCallUI();
         };
 
-        // Show only remote video during a call
-        function showRemoteVideo() {
-            localVideo.style.display = 'none';
+        // Show both local and remote video after the call is accepted
+        function showVideos() {
+            localVideo.style.display = 'block';
             remoteVideo.style.display = 'block';
         }
 
@@ -225,7 +228,7 @@
             callButton.disabled = false;
             endCallButton.disabled = true;
             remoteVideo.style.display = 'none';
-            localVideo.style.display = 'block';
+            localVideo.style.display = 'none';
         }
 
         // Copy Peer ID to clipboard
