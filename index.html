@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Call</title>
     <style>
@@ -148,15 +147,20 @@
 
         peer.on('call', (call) => {
             console.log("Incoming call...");
-            ringtone.play(); // Play ringtone on incoming call
-
+            
+            // Show ringtone and accept button immediately
+            ringtone.classList.remove('hidden');
+            ringtone.play();
             acceptCallButton.classList.remove('hidden');
 
             acceptCallButton.onclick = () => {
                 ringtone.pause(); // Stop ringtone
-                ringtone.currentTime = 0;
-                call.answer(localStream);
+                ringtone.currentTime = 0; // Reset the audio
+                
+                // Hide accept button after accepting call
+                acceptCallButton.classList.add('hidden');
 
+                call.answer(localStream);
                 call.on('stream', (remoteStream) => {
                     console.log('Received remote stream');
                     remoteVideo.srcObject = remoteStream;
@@ -171,7 +175,6 @@
                 currentCall = call;
                 callButton.disabled = true;
                 endCallButton.disabled = false;
-                acceptCallButton.classList.add('hidden');
             };
         });
 
