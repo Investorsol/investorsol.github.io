@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Call</title>
+    <title>Video Call with TURN Server</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,17 +28,31 @@
             width: 200px;
         }
 
-        video {
+        #videoContainer {
+            position: relative;
+            display: inline-block;
+            margin: 20px;
             border: 2px solid #333;
             border-radius: 8px;
-            margin: 20px 10px;
+        }
+
+        #localVideo {
+            position: absolute;
+            width: 160px;
+            height: 120px;
+            border: 2px solid #fff;
+            bottom: 10px;
+            right: 10px;
+            z-index: 2;
+            border-radius: 5px;
             display: none;
         }
 
-        #videoContainer {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+        #remoteVideo {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: none;
         }
 
         button {
@@ -75,24 +89,52 @@
         }
 
         @media (max-width: 768px) {
-            #videoContainer {
-                flex-direction: column;
-            }
-
-            video {
-                width: 90%;
+            #localVideo {
+                width: 100px;
+                height: 75px;
             }
         }
 
         @media (max-width: 480px) {
-            video {
-                width: 100%;
+            #localVideo {
+                width: 80px;
+                height: 60px;
             }
+        }
+
+        .fullscreen-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .fullscreen-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .fullscreen-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
-    <h1>Simple Video Call</h1>
+    <h1>Video Call with TURN Server</h1>
 
     <input type="text" id="peerIdInput" placeholder="Enter Peer ID to call">
     <button id="callButton">Call</button>
@@ -108,9 +150,10 @@
         <button id="acceptCallButton">Accept Call</button>
     </div>
 
-    <div id="videoContainer">
-        <video id="localVideo" autoplay muted controls playsinline></video>
-        <video id="remoteVideo" autoplay controls playsinline></video>
+    <div id="videoContainer" class="fullscreen-container">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+        <button class="fullscreen-button" id="fullscreenButton">Full Screen</button>
     </div>
 
     <audio id="ringtone" src="./images/ringtone.mp3" loop></audio>
@@ -121,6 +164,8 @@
         let peer;
         let localStream;
         let currentCall;
+        let iceServers;
+        
         const callButton = document.getElementById('callButton');
         const endCallButton = document.getElementById('endCallButton');
         const peerIdInput = document.getElementById('peerIdInput');
@@ -131,11 +176,49 @@
         const incomingCallMessage = document.getElementById('incomingCallMessage');
         const acceptCallButton = document.getElementById('acceptCallButton');
         const ringtone = document.getElementById('ringtone');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        const videoContainer = document.getElementById('videoContainer');
 
-        // Fetch ICE servers and initialize PeerJS
+        // Fetch ICE servers from TURN provider (Xirsys)
+        function fetchIceServers() {
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        let res = JSON.parse(xhr.responseText);
+                        console.log("ICE Servers response: ", res.v.iceServers);
+                        resolve(res.v.iceServers);
+                    } else if (xhr.readyState == 4) {
+                        reject("Failed to fetch ICE servers");
+                    }
+                };
+                xhr.open("PUT", "https://global.xirsys.net/_turn/MyFirstApp", true);
+                xhr.setRequestHeader("Authorization", "Basic " + btoa("boysolo:25004894-6f4d-11ef-ae63-0242ac130003"));
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify({"format": "urls"}));
+            });
+        }
+
+        // Initialize PeerJS with ICE Servers
+        async function initializePeer() {
+            try {
+                iceServers = await fetchIceServers();
+                peer = new Peer({ config: { iceServers } });
+                console.log('Peer initialized with ICE servers.');
+                peer.on('open', (id) => {
+                    console.log('My peer ID is: ' + id);
+                    peerIdDisplay.value = id;
+                });
+            } catch (error) {
+                console.error("Error initializing peer with ICE servers:", error);
+            }
+        }
+
+        // Get local media stream
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 localStream = stream;
+                localVideo.srcObject = stream;
                 console.log("Local video stream set.");
             })
             .catch(error => {
@@ -143,15 +226,10 @@
                 alert('Error accessing media devices: ' + error.message);
             });
 
-        peer = new Peer();
-
-        peer.on('open', (id) => {
-            console.log('My peer ID is: ' + id);
-            peerIdDisplay.value = id;
-        });
+        // Initialize PeerJS
+        initializePeer();
 
         peer.on('call', (call) => {
-            console.log("Incoming call...");
             ringtone.play(); // Play ringtone
             incomingCallMessage.style.display = 'block'; // Show the incoming call message
 
@@ -163,14 +241,11 @@
                 call.answer(localStream); // Answer the call
 
                 call.on('stream', (remoteStream) => {
-                    console.log('Received remote stream');
                     remoteVideo.srcObject = remoteStream;
-                    localVideo.srcObject = localStream; // Show local video after acceptance
                     showVideos();
                 });
 
                 call.on('close', () => {
-                    console.log('Call ended.');
                     resetCallUI();
                 });
 
@@ -188,18 +263,14 @@
                 return;
             }
 
-            console.log("Calling peer: " + peerId);
             const call = peer.call(peerId, localStream);
 
             call.on('stream', (remoteStream) => {
-                console.log('Received remote stream');
                 remoteVideo.srcObject = remoteStream;
-                localVideo.srcObject = localStream;
                 showVideos();
             });
 
             call.on('close', () => {
-                console.log('Call ended.');
                 resetCallUI();
             });
 
@@ -241,6 +312,17 @@
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
             });
+        };
+
+        // Full-screen functionality
+        fullscreenButton.onclick = () => {
+            if (videoContainer.classList.contains('fullscreen')) {
+                videoContainer.classList.remove('fullscreen');
+                fullscreenButton.textContent = 'Full Screen';
+            } else {
+                videoContainer.classList.add('fullscreen');
+                fullscreenButton.textContent = 'Exit Full Screen';
+            }
         };
 
     </script>
