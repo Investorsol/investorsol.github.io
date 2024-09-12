@@ -183,27 +183,35 @@
                     alert('Error accessing media devices: ' + error.message);
                 });
 
-            // Call handling
+            // Play ringtone for incoming calls
             peer.on('call', (call) => {
                 console.log("Incoming call...");  // Debug log for incoming call
-                ringtone.play(); // Play ringtone
-                call.answer(localStream);
+                ringtone.play();  // Play ringtone for incoming call
 
-                call.on('stream', (remoteStream) => {
-                    console.log('Received remote stream');
-                    remoteVideo.srcObject = remoteStream;
-                    showRemoteVideo();
-                });
+                // Prompt user to accept or reject the call
+                if (confirm("You have an incoming call. Do you want to accept?")) {
+                    ringtone.pause();  // Stop ringtone when the call is answered
+                    call.answer(localStream);  // Accept the call and send the local video stream
 
-                call.on('close', () => {
-                    console.log('Call ended.');
-                    ringtone.pause(); // Stop ringtone
-                    resetCallUI();
-                });
+                    // Show remote video after the call is accepted
+                    call.on('stream', (remoteStream) => {
+                        console.log('Received remote stream after answering');
+                        remoteVideo.srcObject = remoteStream;
+                        showRemoteVideo();  // Now show the remote video
+                    });
 
-                currentCall = call;
-                callButton.disabled = true;
-                endCallButton.disabled = false;
+                    call.on('close', () => {
+                        console.log('Call ended.');
+                        resetCallUI();
+                    });
+
+                    currentCall = call;
+                    callButton.disabled = true;
+                    endCallButton.disabled = false;
+                } else {
+                    console.log('Call rejected.');
+                    call.close();  // Reject the call by closing it
+                }
             });
 
         }).catch(err => {
